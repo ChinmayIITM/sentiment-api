@@ -2,13 +2,16 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from nltk.sentiment import SentimentIntensityAnalyzer
 import nltk
-
-# Download VADER lexicon (required for cloud deployment like Render)
-nltk.download("vader_lexicon")
+import os
 
 app = FastAPI()
 
-# Initialize sentiment analyzer AFTER downloading lexicon
+# Ensure vader lexicon exists (safe check)
+try:
+    nltk.data.find("sentiment/vader_lexicon.zip")
+except LookupError:
+    nltk.download("vader_lexicon")
+
 sia = SentimentIntensityAnalyzer()
 
 class Comment(BaseModel):
